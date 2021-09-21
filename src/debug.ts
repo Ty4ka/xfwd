@@ -1,5 +1,5 @@
 const debug = async () => {
-    // 
+  //
 }
 
 debug()
