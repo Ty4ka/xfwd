@@ -125,7 +125,7 @@ class XfwdServer {
     }
 
     await saveText(greenlockPath, JSON.stringify(greenlockConfig, null, 2))
-    return newSsl
+    return { newSsl, sites: greenlockConfig.sites }
   }
 }
 
