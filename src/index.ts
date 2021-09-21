@@ -34,7 +34,7 @@ class XfwdServer {
       })
       // Serves on 80 and 443
       // Get's SSL certificates magically!
-      .serve(this.httpsWorker)
+      .serve((glx: any) => this.httpsWorker(glx))
 
     return newSsl
   }
