@@ -82,7 +82,7 @@ class XfwdServer {
     })
   }
 
-  async greenlock() {
+  protected async greenlock() {
     const { email, xfwdDomains, sslConfigPath } = this._settings
     const greenlockPath = path.join(sslConfigPath!, 'config.json')
     ensureDirectoryExistence(greenlockPath)
