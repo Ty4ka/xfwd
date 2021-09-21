@@ -1,0 +1,50 @@
+{
+  "name": "xfwd",
+  "version": "1.0.1",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"jest --config jestconfig.json\"",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepublishOnly": "npm test && npm run lint",
+    "prepare": "npm run build",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "debug": "npm run build && node --trace-warnings --experimental-modules --es-module-specifier-resolution=node ./lib/debug.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ty4ka/xfwd.git"
+  },
+  "keywords": [
+    "proccess"
+  ],
+  "author": "Dmitrii Osipovich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ty4ka/xfwd/issues"
+  },
+  "homepage": "https://github.com/Ty4ka/xfwd#readme",
+  "devDependencies": {
+    "@types/http-proxy": "^1.17.7",
+    "@types/node": "^16.9.2",
+    "prettier": "^2.4.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.4.3"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "dependencies": {
+    "esm-requirer": "^1.0.3",
+    "greenlock-express": "^4.0.3",
+    "http-proxy": "^1.18.1",
+    "time-helpers": "^1.0.0"
+  }
+}
