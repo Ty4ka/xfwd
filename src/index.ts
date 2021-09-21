@@ -49,15 +49,15 @@ class XfwdServer {
     })
 
     // catches error events during proxying
-    proxy.on('error', function (err, req, res) {
-      console.error(err)
+    proxy.on('error', (err, req, res) => {
+      // console.error(err)
       res.statusCode = 500
       res.end()
       return
     })
 
     // We'll proxy websockets too
-    server.on('upgrade', async function (req: any, socket: any, head: any) {
+    server.on('upgrade', async (req: any, socket: any, head: any) => {
       const hostname = req.hostname.toLowerCase()
       const xfwdDomain = xfwdDomains[hostname]
 
@@ -70,7 +70,7 @@ class XfwdServer {
     })
 
     // servers a node app that proxies requests to a localhost
-    glx.serveApp(async function (req: any, res: any) {
+    glx.serveApp(async (req: any, res: any) => {
       const hostname = req.hostname.toLowerCase()
       const xfwdDomain = xfwdDomains[hostname]
 
