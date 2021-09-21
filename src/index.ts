@@ -58,7 +58,7 @@ class XfwdServer {
 
     // We'll proxy websockets too
     server.on('upgrade', async (req: any, socket: any, head: any) => {
-      const hostname = req.hostname.toLowerCase()
+      const hostname = (req.hostname || req.host)?.toLowerCase()
       const xfwdDomain = xfwdDomains[hostname]
 
       if (xfwdDomain) {
@@ -71,7 +71,7 @@ class XfwdServer {
 
     // servers a node app that proxies requests to a localhost
     glx.serveApp(async (req: any, res: any) => {
-      const hostname = req.hostname.toLowerCase()
+      const hostname = (req.hostname || req.host)?.toLowerCase()
       const xfwdDomain = xfwdDomains[hostname]
 
       if (xfwdDomain) {
