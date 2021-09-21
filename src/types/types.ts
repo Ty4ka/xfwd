@@ -2,7 +2,7 @@ export type TXfwdServerSettings = {
   email: string
   appPath: string
   xfwdDomains: TXfwdDomainData
-  sslConfigDir?: string
+  sslConfigPath?: string
 }
 
 export type TXfwdDomainData = {

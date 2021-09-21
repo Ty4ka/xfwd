@@ -1,19 +1,23 @@
+import path from 'path'
 import httpProxy from 'http-proxy'
 import greenlock from 'greenlock-express'
+import { ensureDirectoryExistence, saveText } from 'fs-extreme'
 import { TXfwdServerSettings } from './types/types'
+import { requiresTrySimport } from 'esm-requirer'
 
 class XfwdServer {
   private _settings: TXfwdServerSettings
 
   constructor(s: TXfwdServerSettings) {
     this._settings = {
-      sslConfigDir: './greenlock.d',
+      sslConfigPath: path.join(s.appPath, 'greenlock.d'),
       ...s
     }
   }
 
-  start() {
-    const { email, appPath, sslConfigDir } = this._settings
+  async start() {
+    const { email, appPath, sslConfigPath: sslConfigDir } = this._settings
+    const newSsl = await this.greenlock()
 
     greenlock
       .init({
@@ -31,6 +35,8 @@ class XfwdServer {
       // Serves on 80 and 443
       // Get's SSL certificates magically!
       .serve(this.httpsWorker)
+
+    return newSsl
   }
 
   protected httpsWorker(glx: any) {
@@ -74,6 +80,52 @@ class XfwdServer {
         })
       }
     })
+  }
+
+  async greenlock() {
+    const { email, xfwdDomains, sslConfigPath } = this._settings
+    const greenlockPath = path.join(sslConfigPath!, 'config.json')
+    ensureDirectoryExistence(greenlockPath)
+
+    const config: any = (await requiresTrySimport({ modulesPaths: [greenlockPath] }))[0]
+    const greenlockConfig: any = {
+      defaults: {
+        store: {
+          module: 'greenlock-store-fs'
+        },
+        challenges: {
+          'http-01': {
+            module: 'acme-http-01-standalone'
+          }
+        },
+        renewOffset: '-45d',
+        renewStagger: '3d',
+        accountKeyType: 'EC-P256',
+        serverKeyType: 'RSA-2048',
+        subscriberEmail: email || 'a@b.com'
+      },
+      sites: [],
+      ...config
+    }
+
+    greenlockConfig.sites = (greenlockConfig.sites || []).filter((site: any) => xfwdDomains[site.subject])
+
+    const newSsl: string[] = []
+    for (const hostKey in xfwdDomains) {
+      if (greenlockConfig.sites.some((site: any) => hostKey === site.subject)) {
+        continue
+      }
+
+      newSsl.push(hostKey)
+      greenlockConfig.sites.push({
+        subject: hostKey,
+        altnames: [hostKey],
+        renewAt: 1
+      })
+    }
+
+    await saveText(greenlockPath, JSON.stringify(greenlockConfig, null, 2))
+    return newSsl
   }
 }
 

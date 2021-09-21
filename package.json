@@ -43,6 +43,7 @@
   ],
   "dependencies": {
     "esm-requirer": "^1.0.3",
+    "fs-extreme": "^1.0.1",
     "greenlock-express": "^4.0.3",
     "http-proxy": "^1.18.1",
     "time-helpers": "^1.0.0"
