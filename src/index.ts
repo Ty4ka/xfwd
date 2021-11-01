@@ -64,7 +64,7 @@ class XfwdServer {
       if (xfwdDomain) {
         proxy.ws(req, socket, head, {
           ws: true,
-          target: `ws://localhost:${xfwdDomain.port}`
+          target: `ws://0.0.0.0:${xfwdDomain.port}`
         })
       }
     })
@@ -76,7 +76,7 @@ class XfwdServer {
 
       if (xfwdDomain) {
         proxy.web(req, res, {
-          target: `http://localhost:${xfwdDomain.port}`
+          target: `http://0.0.0.0:${xfwdDomain.port}`
         })
       }
     })
