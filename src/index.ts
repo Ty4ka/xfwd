@@ -54,7 +54,7 @@ class XfwdServer {
     proxy.on('error', (err, req, res) => {
       // console.error(err)
       try {
-        (res as any).statusCode = 500
+        ;(res as any).statusCode = 500
         res.end()
         return
       } catch (e: any) {
