@@ -51,33 +51,45 @@ class XfwdServer {
     // catches error events during proxying
     proxy.on('error', (err, req, res) => {
       // console.error(err)
-      res.statusCode = 500
-      res.end()
-      return
+      try {
+        (res as any).statusCode = 500
+        res.end()
+        return
+      } catch (e: any) {
+        console.log(e)
+      }
     })
 
     // We'll proxy websockets too
     server.on('upgrade', async (req: any, socket: any, head: any) => {
-      const hostname = (req.hostname || req.host)?.toLowerCase()
-      const xfwdDomain = xfwdDomains[hostname]
+      try {
+        const hostname = (req.hostname || req.host)?.toLowerCase()
+        const xfwdDomain = xfwdDomains[hostname]
 
-      if (xfwdDomain) {
-        proxy.ws(req, socket, head, {
-          ws: true,
-          target: `ws://0.0.0.0:${xfwdDomain.port}`
-        })
+        if (xfwdDomain) {
+          proxy.ws(req, socket, head, {
+            ws: true,
+            target: `ws://0.0.0.0:${xfwdDomain.port}`
+          })
+        }
+      } catch (e: any) {
+        console.log(e)
       }
     })
 
     // servers a node app that proxies requests to a localhost
     glx.serveApp(async (req: any, res: any) => {
-      const hostname = (req.hostname || req.host)?.toLowerCase()
-      const xfwdDomain = xfwdDomains[hostname]
+      try {
+        const hostname = (req.hostname || req.host)?.toLowerCase()
+        const xfwdDomain = xfwdDomains[hostname]
 
-      if (xfwdDomain) {
-        proxy.web(req, res, {
-          target: `http://0.0.0.0:${xfwdDomain.port}`
-        })
+        if (xfwdDomain) {
+          proxy.web(req, res, {
+            target: `http://0.0.0.0:${xfwdDomain.port}`
+          })
+        }
+      } catch (e: any) {
+        console.log(e)
       }
     })
   }
