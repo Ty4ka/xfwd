@@ -1,3 +1,5 @@
+/* tslint:disable:no-console */
+
 import path from 'path'
 import httpProxy from 'http-proxy'
 import greenlock from 'greenlock-express'
